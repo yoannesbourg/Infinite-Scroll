@@ -1,0 +1,19 @@
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 182px;
+    .header__logo {
+        width: 100px;
+        height: 100px;
+    }
+}
+.body {
+    min-height: 300px;
+    background-color: #f6f6f6;
+}
