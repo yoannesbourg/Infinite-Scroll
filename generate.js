@@ -1,0 +1,37 @@
+module.exports = function () {
+    const faker = require('faker');
+    const { image } = require('faker');
+    const _ = require('lodash');
+    const categories = [
+        'abstract',
+        'animals',
+        'business',
+        'cats',
+        'city',
+        'food',
+        'nightlife',
+        'fashion',
+        'people',
+        'nature',
+        'sports',
+        'technics',
+        'transport',
+    ];
+    return {
+        images: _.times(100, function (n) {
+            return {
+                type: 'Image',
+                id: faker.datatype.uuid,
+                title: faker.lorem.words(),
+                author: faker.name.findName(),
+                created_at: faker.date.past(),
+                main_attachment: {
+                    big: image.imageUrl(500, 400, categories[Math.floor(Math.random() * categories.length)], true),
+                    small: image.imageUrl(125, 100, categories[Math.floor(Math.random() * categories.length)], true),
+                },
+                likes_count: faker.datatype.number(),
+                liked: faker.datatype.boolean(),
+            };
+        }),
+    };
+};
