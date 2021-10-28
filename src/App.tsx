@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import AxiosConfig from './config/axios.config';
 
 import Searchbar from './components/Searchbar/Searchbar';
@@ -10,11 +10,32 @@ import logo from './img/logo.png';
 
 const App = (): JSX.Element => {
     const [images, setImages] = useState<image[]>();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [limit, setLimit] = useState<number>(100);
+    const [search, setSearch] = useState<string>('');
+
+    const containerRef = useRef(null);
+
+    const callBackFunction = () => {
+        setLimit((prev) => prev + 100);
+    };
+
+    const options = {
+        root: null,
+        rootMargin: '100px',
+        threshold: 1,
+    };
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(callBackFunction, options);
+        if (containerRef.current) observer.observe(containerRef.current);
+        return () => {
+            if (containerRef.current) observer.unobserve(containerRef.current);
+        };
+    }, [containerRef]);
+
     const fecthImages = async () => {
         try {
-            setIsLoading(true);
-            const response = await AxiosConfig.get(`/images`);
+            const response = await AxiosConfig.get(`/images?_page=0&_limit=${limit}${search && '&q=' + search}`);
             if (response.status !== 200) {
                 return {
                     status: 500,
@@ -22,7 +43,6 @@ const App = (): JSX.Element => {
                 };
             }
             setImages(response.data);
-            setIsLoading(false);
             return response.data;
         } catch (error) {
             return {
@@ -31,13 +51,14 @@ const App = (): JSX.Element => {
             };
         }
     };
-    const handleSearch = () => {
-        return;
+    const handleSearch = (search: string) => {
+        console.log(search);
+        setSearch(search);
     };
 
     useEffect(() => {
         fecthImages();
-    }, []);
+    }, [limit, search]);
     return (
         <div>
             <div className="header container">
@@ -47,20 +68,15 @@ const App = (): JSX.Element => {
 
             <div className="body">
                 <div className="container">
-                    {isLoading ? (
-                        <Loader />
+                    {images ? (
+                        images.map((image) => {
+                            return <div key={image.id}>{image.title}</div>;
+                        })
                     ) : (
-                        <>
-                            {images ? (
-                                images.map((image) => {
-                                    return <div key={image.id}>{image.title}</div>;
-                                })
-                            ) : (
-                                <div>No images</div>
-                            )}
-                        </>
+                        <div>No images</div>
                     )}
                 </div>
+                <div ref={containerRef}></div>
             </div>
         </div>
     );

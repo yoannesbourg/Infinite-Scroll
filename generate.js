@@ -18,7 +18,7 @@ module.exports = function () {
         'transport',
     ];
     return {
-        images: _.times(100, function (n) {
+        images: _.times(100000, function () {
             return {
                 type: 'Image',
                 id: faker.datatype.uuid,
