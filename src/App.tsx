@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react';
+import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import AxiosConfig from './config/axios.config';
 
 import Searchbar from './components/Searchbar/Searchbar';
@@ -82,18 +82,17 @@ const App = (): JSX.Element => {
     };
 
     const handleLike = (image: image) => {
-        console.log(image.liked);
         const updatedImage = {
             ...image,
             liked: !image.liked,
             likes_count: image.liked ? image.likes_count - 1 : image.likes_count + 1,
         };
-        likeImage(updatedImage);
+        likeImage(updatedImage).then(() => fecthImages());
     };
 
     useEffect(() => {
         fecthImages();
-    }, [limit, search, handleLike]);
+    }, [limit, search]);
     return (
         <div>
             <div className="header container">
@@ -110,7 +109,7 @@ const App = (): JSX.Element => {
                     ) : (
                         <Loader />
                     )}
-                    {isLoading && <Loader />}
+                    {/* {isLoading && <Loader />} */}
                     <div ref={containerRef} />
                 </div>
             </div>
