@@ -10,4 +10,5 @@ export interface image {
     };
     likes_count: number;
     liked: boolean;
+    price: number;
 }
