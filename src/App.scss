@@ -18,17 +18,24 @@
     min-height: 85vh;
     background-color: #f6f6f6;
     .body__imageList {
+        padding-top: 50px;
         display: flex;
         justify-content: center;
         max-width: 100%;
         flex-wrap: wrap;
         display: grid;
-        grid-template: 160px / repeat(2, 160px);
-        @media (max-width: 600px) {
-            grid-template: 160px / repeat(1, 160px);
+        grid-template: 350px / repeat(4, 300px);
+        @media (max-width: 1400px) {
+            grid-template: 350px / repeat(3, 300px);
+        }
+        @media (max-width: 1200px) {
+            grid-template: 350px / repeat(2, 300px);
+        }
+        @media (max-width: 640px) {
+            grid-template: 350px / repeat(1, 300px);
         }
         grid-gap: 16px;
-        grid-auto-columns: 160px;
-        grid-auto-rows: 160px;
+        grid-auto-columns: 300px;
+        grid-auto-rows: 350px;
     }
 }

@@ -21,6 +21,7 @@ module.exports = function () {
         images: _.times(100000, function () {
             return {
                 type: 'Image',
+                // id: i,
                 id: faker.datatype.uuid(),
                 title: faker.lorem.words(),
                 author: faker.name.findName(),
@@ -29,9 +30,9 @@ module.exports = function () {
                     big: image.imageUrl(500, 400, categories[Math.floor(Math.random() * categories.length)], true),
                     small: image.imageUrl(125, 100, categories[Math.floor(Math.random() * categories.length)], true),
                 },
-                likes_count: faker.datatype.number(),
+                likes_count: faker.datatype.number({ max: 999 }),
                 liked: faker.datatype.boolean(),
-                price: faker.datatype.number({ min: 1, max: 1000}),
+                price: faker.datatype.number({ min: 1, max: 1000 }),
             };
         }),
     };

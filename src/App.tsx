@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import AxiosConfig from './config/axios.config';
 
 import Searchbar from './components/Searchbar/Searchbar';
-import Loader from './components/Loader/Loader';
 import Card from './components/Card/Card';
 import { image } from './interfaces/imagesListInterface';
 
@@ -10,11 +9,9 @@ import './App.scss';
 import logo from './img/logo.png';
 
 const App = (): JSX.Element => {
-    const [images, setImages] = useState<image[]>();
-    const [limit, setLimit] = useState<number>(100);
+    const [images, setImages] = useState<image[]>([]);
+    const [limit, setLimit] = useState<number>(12);
     const [search, setSearch] = useState<string>('');
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-
     const containerRef = useRef(null);
 
     const callBackFunction = () => {
@@ -29,17 +26,8 @@ const App = (): JSX.Element => {
         };
     }, []);
 
-    useEffect(() => {
-        const observer = new IntersectionObserver(callBackFunction, options);
-        if (containerRef.current) observer.observe(containerRef.current);
-        return () => {
-            if (containerRef.current) observer.unobserve(containerRef.current);
-        };
-    }, [containerRef]);
-
     const fecthImages = async () => {
         try {
-            setIsLoading(true);
             const response = await AxiosConfig.get(`/images?_page=0&_limit=${limit}${search && '&q=' + search}`);
             if (response.status !== 200) {
                 return {
@@ -48,7 +36,6 @@ const App = (): JSX.Element => {
                 };
             }
             setImages(response.data);
-            setIsLoading(false);
             return response.data;
         } catch (error) {
             return {
@@ -67,7 +54,6 @@ const App = (): JSX.Element => {
                     message: 'Error',
                 };
             }
-            console.log('likeImage', response.data);
             return response.data;
         } catch (error) {
             return {
@@ -89,27 +75,34 @@ const App = (): JSX.Element => {
         };
         likeImage(updatedImage).then(() => fecthImages());
     };
+    useEffect(() => {
+        const observer = new IntersectionObserver(callBackFunction, options);
+        if (containerRef.current) observer.observe(containerRef.current);
+        return () => {
+            if (containerRef.current) observer.unobserve(containerRef.current);
+        };
+    }, [containerRef]);
 
     useEffect(() => {
         fecthImages();
     }, [limit, search]);
+
+    useEffect(() => {
+        setLimit(10);
+    }, [search]);
+
     return (
         <div>
             <div className="header container">
                 <img className="header__logo" src={logo} alt="logo" />
                 <Searchbar handleSearch={handleSearch} />
             </div>
-
             <div className="body">
                 <div className="container body__imageList">
-                    {images ? (
+                    {images &&
                         images.map((image, i) => {
                             return <Card key={image.id} image={image} handleLike={() => handleLike(image)}></Card>;
-                        })
-                    ) : (
-                        <Loader />
-                    )}
-                    {/* {isLoading && <Loader />} */}
+                        })}
                     <div ref={containerRef} />
                 </div>
             </div>
