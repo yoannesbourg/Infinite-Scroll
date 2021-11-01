@@ -1,4 +1,4 @@
-# Getting Started
+# Infinite scroll
 
 - Clone this project, 
 - npm install
