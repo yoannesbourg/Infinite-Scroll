@@ -100,7 +100,7 @@ const App = (): JSX.Element => {
             <div className="body">
                 <div className="container body__imageList">
                     {images &&
-                        images.map((image, i) => {
+                        images.map((image) => {
                             return <Card key={image.id} image={image} handleLike={() => handleLike(image)}></Card>;
                         })}
                     <div ref={containerRef} />
